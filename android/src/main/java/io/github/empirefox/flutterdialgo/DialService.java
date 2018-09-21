@@ -74,7 +74,7 @@ public class DialService extends Service {
   public void onDestroy() {
     dialer.stopDialThread();
     try {
-      dialer.destroySync();
+      dialer.doDestroySync();
     } catch (Exception e) {
       Log.e(TAG, "Failed to destroy go resources", e);
     }

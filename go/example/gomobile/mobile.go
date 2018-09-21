@@ -14,13 +14,13 @@ type ConcurrentRunner interface {
 }
 
 type FromGo interface {
-	// InitOnce do init things like listening. Do clean internally if err.
+	// DoInitOnce do init things like listening. Do clean internally if err.
 	// Safe to be called multi times with multi threads.
-	InitOnce() ConcurrentRunner
+	DoInitOnce() ConcurrentRunner
 
-	// DestroyOnce do clean things like freeing resources, closing listeners.
+	// DoDestroyOnce do clean things like freeing resources, closing listeners.
 	// Safe to be called multi times with multi threads.
-	DestroyOnce() ConcurrentRunner
+	DoDestroyOnce() ConcurrentRunner
 }
 
 func NewFromGo() FromGo {
@@ -35,7 +35,7 @@ type fromGo struct {
 	destroy *forgo.ConcurrentRunner
 }
 
-func (m *fromGo) InitOnce() ConcurrentRunner {
+func (m *fromGo) DoInitOnce() ConcurrentRunner {
 	m.init.Once(func() error {
 		// TODO init code here
 		gomobile.StartServer1()
@@ -45,7 +45,7 @@ func (m *fromGo) InitOnce() ConcurrentRunner {
 	return m.init
 }
 
-func (m *fromGo) DestroyOnce() ConcurrentRunner {
+func (m *fromGo) DoDestroyOnce() ConcurrentRunner {
 	m.destroy.Once(func() error {
 		// TODO clean code here
 		return nil

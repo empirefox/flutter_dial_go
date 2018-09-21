@@ -24,11 +24,11 @@ public class Dialer extends Handler implements formobile.Dialer {
     dialHandler = new Handler(dialThread.getLooper());
   }
 
-  public void init(Callback cb) {
+  public void doInit(Callback cb) {
     if (go == null) {
       go = Gomobile.newFromGo();
     }
-    ConcurrentRunner runner = go.initOnce();
+    ConcurrentRunner runner = go.doInitOnce();
     dialHandler.post(() -> {
       try {
         runner.done();
@@ -39,7 +39,7 @@ public class Dialer extends Handler implements formobile.Dialer {
     });
   }
 
-  public void destroy(Callback cb) {
+  public void doDestroy(Callback cb) {
     if (go == null) {
       cb.success();
       return;
@@ -47,7 +47,7 @@ public class Dialer extends Handler implements formobile.Dialer {
 
     FromGo go = this.go;
     this.go = null;
-    destroyRunner = go.destroyOnce();
+    destroyRunner = go.doDestroyOnce();
 
     dialHandler.post(() -> {
       try {
@@ -65,10 +65,10 @@ public class Dialer extends Handler implements formobile.Dialer {
     });
   }
 
-  public void destroySync() throws Exception {
+  public void doDestroySync() throws Exception {
     ConcurrentRunner runner = null;
     if (go != null) {
-      runner = go.destroyOnce();
+      runner = go.doDestroyOnce();
     }
     if (runner == null) {
       runner = destroyRunner;

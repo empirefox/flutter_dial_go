@@ -147,7 +147,7 @@ public class FlutterDialGoPlugin extends Handler implements MethodCallHandler, S
   }
 
   private void onMethodInitGo(MethodCall call, Result result) {
-    dialer.init(new Dialer.Callback() {
+    dialer.doInit(new Dialer.Callback() {
       @Override
       public void success() {
         result.success(null);
@@ -161,7 +161,7 @@ public class FlutterDialGoPlugin extends Handler implements MethodCallHandler, S
   }
 
   private void onMethodDestroyGo(MethodCall call, Result result) {
-    dialer.destroy(new Dialer.Callback() {
+    dialer.doDestroy(new Dialer.Callback() {
       @Override
       public void success() {
         result.success(null);
