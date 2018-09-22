@@ -1,5 +1,7 @@
 // gomobile must be created by developer. The package name must be gomobile.
 // These apis must/only be here: ConcurrentRunner, FromGo, NewFromGo.
+// For ios, do not forget add "${PODS_ROOT}/../Frameworks" to Framework search
+// path. Use `make ios` and  `make android`.
 package gomobile
 
 import (

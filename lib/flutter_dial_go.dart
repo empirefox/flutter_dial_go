@@ -15,10 +15,10 @@ class Conn implements StreamSink<List<int>> {
       switch (call.method) {
         case 'close':
           {
-            print('close conn request comes...');
-            Int64List args = call.arguments;
-            var id = args[0];
-            var err = _GoConnErr.values[args[1]];
+            List args = call.arguments;
+            var id = args[0] as int;
+            var err = _GoConnErr.values[args[1] as int];
+            print('close conn request comes, err: $err');
             var stream = _localStreams[id];
             if (stream != null) {
               switch (err) {
@@ -90,7 +90,7 @@ class Conn implements StreamSink<List<int>> {
   static Future<Conn> dial(int port) async {
     var id = _id++;
     var timeoutnano = 0;
-    var args = Int64List.fromList(<int>[port, id, timeoutnano]);
+    var args = <dynamic>[port, id, timeoutnano];
     await _controller.invokeMethod('dial', args);
     return Conn._private(id);
   }
@@ -181,3 +181,4 @@ enum _GoConnErr {
   ErrClosedPipe,
   ErrTimeout,
 }
+

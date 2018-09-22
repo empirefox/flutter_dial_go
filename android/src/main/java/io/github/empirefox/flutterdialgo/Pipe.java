@@ -2,9 +2,9 @@ package io.github.empirefox.flutterdialgo;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 
 import formobile.Conn;
 import formobile.WriteReturn;
@@ -16,9 +16,6 @@ import static formobile.Formobile.ErrNone;
 
 public class Pipe extends Handler {
   private static final String streamPrefix = "fdgs#";
-
-  private static final int WRITE = 0;
-  private static final int CLOSE = 1;
 
   private final BinaryMessenger messenger;
   private final MethodChannel controller;
@@ -50,29 +47,17 @@ public class Pipe extends Handler {
       }
     });
 
-    new Thread(() -> {
-      byte err = ErrNone;
-      while (err == ErrNone) {
-        err = conn.read((byte[] b, int n) -> {
-          if (n > 0) {
-            sendMessage(obtainMessage(WRITE, ByteBuffer.allocateDirect(n).put(b)));
-          }
-        });
-      }
-      sendMessage(obtainMessage(CLOSE, err));
-    }).start();
-  }
-
-  @Override
-  public void handleMessage(Message msg) {
-    switch (msg.what) {
-      case WRITE:
-        messenger.send(streamName, (ByteBuffer) msg.obj);
-        break;
-      case CLOSE:
-        closeWithErr((byte) msg.obj);
-        break;
-    }
+    conn.startRead((byte[] b, int n, byte err) -> {
+      ByteBuffer data = n > 0 ? ByteBuffer.allocateDirect(n).put(b) : null;
+      post(() -> {
+        if (n > 0) {
+          messenger.send(streamName, data);
+        }
+        if (err != ErrNone) {
+          closeWithErr(err);
+        }
+      });
+    });
   }
 
   public void stop() {
@@ -86,7 +71,11 @@ public class Pipe extends Handler {
     closed = true;
 
     messenger.setMessageHandler(streamName, null);
-    controller.invokeMethod("close", new long[]{id, Byte.valueOf(err).longValue()});
+    ArrayList<Object> args = new ArrayList<>();
+    args.add(id);
+    args.add(Byte.valueOf(err).intValue());
+    controller.invokeMethod("close", args);
     conn.close();
   }
 }
+

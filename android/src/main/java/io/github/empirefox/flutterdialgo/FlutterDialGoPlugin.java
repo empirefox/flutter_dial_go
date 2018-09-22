@@ -14,6 +14,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import formobile.Conn;
@@ -176,10 +177,10 @@ public class FlutterDialGoPlugin extends Handler implements MethodCallHandler, S
 
   private void onMethodDial(MethodCall call, Result result) {
     dialer.getDialHandler().post(() -> {
-      long[] args = call.arguments();
-      int port = Long.valueOf(args[0]).intValue();
-      long id = args[1];
-      long timeoutnano = args[2];
+      List<Object> args = call.arguments();
+      int port = (int) args.get(0);
+      long id = (long) args.get(1);
+      long timeoutnano = (long) args.get(2);
       try {
         Conn conn = dialer.dial(port, id, timeoutnano);
         post(() -> {
@@ -229,3 +230,4 @@ public class FlutterDialGoPlugin extends Handler implements MethodCallHandler, S
     return true;
   }
 }
+

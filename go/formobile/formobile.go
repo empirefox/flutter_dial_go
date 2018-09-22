@@ -8,7 +8,7 @@ import (
 	"github.com/empirefox/flutter_dial_go/go/internal/listener"
 )
 
-// for Read/ClientRead and Write/ClientWrite, must sync with listener
+// for DataHandler/ClientRead and Write/ClientWrite, must sync with listener
 const (
 	ErrNone int8 = iota
 	EOF
@@ -16,8 +16,8 @@ const (
 	ErrTimeout
 )
 
-type ReadCallback interface {
-	OnData(b []byte, n int32)
+type DataHandler interface {
+	OnData(b []byte, n int32, err int8)
 }
 
 type WriteReturn struct {
@@ -26,8 +26,8 @@ type WriteReturn struct {
 }
 
 type Conn interface {
-	// Read read current all buffered data to cb. Return 0 if no error.
-	Read(cb ReadCallback) (err int8)
+	// StartRead read buffered data to h.
+	StartRead(h DataHandler)
 
 	// Write writes data to the connection.
 	// Write can be made to time out and return an Error with Timeout() == true
@@ -47,8 +47,18 @@ type conn struct {
 	cc listener.ClientConn
 }
 
-func (c *conn) Read(cb ReadCallback) (err int8) {
-	return c.cc.ClientRead(cb.OnData)
+func (c *conn) StartRead(h DataHandler) {
+	go func() {
+		onData := func(b []byte, n int32) { h.OnData(b, n, ErrNone) }
+		err := ErrNone
+		for {
+			err = c.cc.ClientRead(onData)
+			if err != ErrNone {
+				h.OnData(nil, 0, err)
+				return
+			}
+		}
+	}()
 }
 
 func (c *conn) Write(b []byte) *WriteReturn {
@@ -76,3 +86,4 @@ func (d *dialer) Dial(port int32, channelId int64, timeoutnano int64) (Conn, err
 var defaultDialer Dialer = new(dialer)
 
 func GetDialer() Dialer { return defaultDialer }
+
