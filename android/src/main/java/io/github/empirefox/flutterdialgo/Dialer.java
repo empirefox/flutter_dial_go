@@ -32,16 +32,16 @@ public class Dialer extends Handler implements formobile.Dialer {
     dialHandler.post(() -> {
       try {
         runner.done();
-        post(() -> cb.success());
+        post(() -> cb.onResult(null));
       } catch (Exception e) {
-        post(() -> cb.error(e));
+        post(() -> cb.onResult(e));
       }
     });
   }
 
   public void doDestroy(Callback cb) {
     if (go == null) {
-      cb.success();
+      cb.onResult(null);
       return;
     }
 
@@ -53,12 +53,12 @@ public class Dialer extends Handler implements formobile.Dialer {
       try {
         destroyRunner.done();
         post(() -> {
-          cb.success();
+          cb.onResult(null);
           destroyRunner = null;
         });
       } catch (Exception e) {
         post(() -> {
-          cb.error(e);
+          cb.onResult(e);
           destroyRunner = null;
         });
       }
@@ -98,9 +98,7 @@ public class Dialer extends Handler implements formobile.Dialer {
   }
 
   public interface Callback {
-    void success();
-
-    // fatal error, bugs here!!!
-    void error(Exception e);
+    // fatal error if e is not null, bugs here!!!
+    void onResult(Exception e);
   }
 }

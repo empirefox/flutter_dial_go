@@ -10,7 +10,7 @@ import android.content.ServiceConnection;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
-import android.util.Log;
+import android.os.Looper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,14 +30,14 @@ import io.flutter.view.FlutterNativeView;
  * FlutterDialGoPlugin
  */
 public class FlutterDialGoPlugin extends Handler implements MethodCallHandler, ServiceConnection, ViewDestroyListener {
-  private static final String TAG = "FlutterDialGoPlugin#";
   private final MethodChannel controller;
   private final Registrar registrar;
   private final Map<Long, Pipe> pipes = new HashMap<>();
 
-  private Dialer dialer;
+  private Dialer dialer = null;
   private Result bindResult = null;
   private Result unbindResult = null;
+  private boolean serviceMode = false;
 
   public FlutterDialGoPlugin(Registrar registrar, MethodChannel controller) {
     this.registrar = registrar;
@@ -61,11 +61,34 @@ public class FlutterDialGoPlugin extends Handler implements MethodCallHandler, S
         onMethodCreateNotificationChannel(call, result);
         return;
 
+      case "noService":
+        if (dialer != null || serviceMode) {
+          result.error("onMethodCall", "service mode or dialer already exist", null);
+          return;
+        }
+        dialer = new Dialer(Looper.getMainLooper());
+        result.success(null);
+        return;
+
       case "startService":
+        if (dialer != null || serviceMode) {
+          result.error("onMethodCall", "dialer already exist", null);
+          return;
+        }
+        serviceMode = true;
         onMethodStartService(call, result);
         return;
 
       case "stopService":
+        if (!serviceMode) {
+          dialer = null;
+          result.success(null);
+          return;
+        }
+        if (dialer == null) {
+          result.success(null);
+          return;
+        }
         onMethodStopService(call, result);
         return;
     }
@@ -148,29 +171,21 @@ public class FlutterDialGoPlugin extends Handler implements MethodCallHandler, S
   }
 
   private void onMethodInitGo(MethodCall call, Result result) {
-    dialer.doInit(new Dialer.Callback() {
-      @Override
-      public void success() {
-        result.success(null);
-      }
-
-      @Override
-      public void error(Exception e) {
+    dialer.doInit((e) -> {
+      if (e != null) {
         result.error("initGo", e.toString(), null);
+      } else {
+        result.success(null);
       }
     });
   }
 
   private void onMethodDestroyGo(MethodCall call, Result result) {
-    dialer.doDestroy(new Dialer.Callback() {
-      @Override
-      public void success() {
-        result.success(null);
-      }
-
-      @Override
-      public void error(Exception e) {
+    dialer.doDestroy((e) -> {
+      if (e != null) {
         result.error("destroyGo", e.toString(), null);
+      } else {
+        result.success(null);
       }
     });
   }
@@ -179,8 +194,8 @@ public class FlutterDialGoPlugin extends Handler implements MethodCallHandler, S
     dialer.getDialHandler().post(() -> {
       List<Object> args = call.arguments();
       int port = (int) args.get(0);
-      long id = (long) args.get(1);
-      long timeoutnano = (long) args.get(2);
+      long id = ((Number) args.get(1)).longValue();
+      long timeoutnano = ((Number) args.get(2)).longValue();
       try {
         Conn conn = dialer.dial(port, id, timeoutnano);
         post(() -> {
@@ -216,17 +231,18 @@ public class FlutterDialGoPlugin extends Handler implements MethodCallHandler, S
     dialer = null;
     unbindResult.success(null);
     unbindResult = null;
+    serviceMode = false;
   }
 
   @Override
   public boolean onViewDestroy(FlutterNativeView flutterNativeView) {
-    Log.i(TAG, "onViewDestroy");
-    if (dialer != null) {
+    if (dialer != null && serviceMode) {
       registrar.activity().unbindService(this);
     }
     for (Pipe pipe : pipes.values()) {
       pipe.stop();
     }
+    pipes.clear();
     return true;
   }
 }

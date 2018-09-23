@@ -77,7 +77,7 @@ class _MyAppState extends State<MyApp> {
       name: 'fdg running',
       description: 'keep fdg running',
     );
-    await Conn.startGo(
+    await Conn.startGoWithService(
       channelId: channelId,
       notificationId: notificationId,
       title: 'flutter_dial_go example',

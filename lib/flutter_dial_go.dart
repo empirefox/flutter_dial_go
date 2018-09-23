@@ -54,7 +54,14 @@ class Conn implements StreamSink<List<int>> {
     return await _controller.invokeMethod('notificationChannel', args);
   }
 
-  static Future startGo({
+  static Future startGo() async {
+    if (Platform.isAndroid) {
+      await _controller.invokeMethod('noService');
+    }
+    return await _controller.invokeMethod('initGo');
+  }
+
+  static Future startGoWithService({
     String channelId,
     int notificationId,
     String title,
@@ -181,4 +188,3 @@ enum _GoConnErr {
   ErrClosedPipe,
   ErrTimeout,
 }
-
