@@ -9,7 +9,7 @@ android:
 	cp ../example/android/go/go-sources.jar ../android/libs/
 
 ios:
-	gomobile bind -target ios -o ../example/Frameworks/ios/Gomobile.framework \
+	gomobile bind -target ios -o ../example/ios/Frameworks/Gomobile.framework \
 		github.com/empirefox/flutter_dial_go/go/example/gomobile \
 		github.com/empirefox/flutter_dial_go/go/formobile
 
@@ -18,5 +18,5 @@ clean:
 	rm ../example/android/go/*.jar
 	rm ../android/libs/*.aar
 	rm ../android/libs/*.jar
-	rm -rf ../example/Frameworks/ios/Gomobile.framework
+	rm -rf ../example/ios/Frameworks/Gomobile.framework
 

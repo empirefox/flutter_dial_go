@@ -8,6 +8,7 @@ import (
 	"github.com/empirefox/flutter_dial_go/go/internal/listener"
 )
 
+// ConcurrentRunner implement gomobile.ConcurrentRunner which exposed to mobile.
 type ConcurrentRunner struct {
 	once sync.Once
 	err  error
