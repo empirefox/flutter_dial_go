@@ -91,7 +91,7 @@ class Conn implements StreamSink<List<int>> {
 
   StreamController<List<int>> _localStream;
   final String _streamName;
-  final Completer _sinkDone = Completer();
+  final Completer<bool> _sinkDone = Completer();
   bool _sinkClosed = false;
 
   static Future<Conn> dial(int port) async {
@@ -150,10 +150,10 @@ class Conn implements StreamSink<List<int>> {
     return stream
         .listen(
           (data) => add(data),
-          onDone: () => close(),
-          onError: (Object err, [StackTrace stack]) => addError(err, stack),
-          cancelOnError: false,
-        )
+      onDone: () => close(),
+      onError: (Object err, [StackTrace stack]) => addError(err, stack),
+      cancelOnError: false,
+    )
         .asFuture();
   }
 
@@ -165,7 +165,7 @@ class Conn implements StreamSink<List<int>> {
     BinaryMessages.setMessageHandler(_streamName, null);
     await _controller.invokeMethod('close', id);
 
-    _sinkDone.complete();
+    _sinkDone.complete(true);
   }
 
   @override
