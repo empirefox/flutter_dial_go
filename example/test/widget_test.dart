@@ -7,7 +7,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:flutter_dial_go_example/main.dart';
+import 'package:flutter_dial_go_example/src/app.dart';
 
 void main() {
   testWidgets('Verify Platform version', (WidgetTester tester) async {

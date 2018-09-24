@@ -18,7 +18,6 @@ class Conn implements StreamSink<List<int>> {
             List args = call.arguments;
             var id = args[0] as int;
             var err = _GoConnErr.values[args[1] as int];
-            print('close conn request comes, err: $err');
             var stream = _localStreams[id];
             if (stream != null) {
               switch (err) {
@@ -108,6 +107,7 @@ class Conn implements StreamSink<List<int>> {
     if (_localStream == null) {
       _localStream = StreamController<List<int>>(
         onListen: () async {
+          _localStream.done.then((_) => close());
           BinaryMessages.setMessageHandler(_streamName, (ByteData reply) async {
             if (_sinkClosed || reply == null) {
               _localStream.close();
@@ -150,10 +150,10 @@ class Conn implements StreamSink<List<int>> {
     return stream
         .listen(
           (data) => add(data),
-      onDone: () => close(),
-      onError: (Object err, [StackTrace stack]) => addError(err, stack),
-      cancelOnError: false,
-    )
+          onDone: () => close(),
+          onError: (Object err, [StackTrace stack]) => addError(err, stack),
+          cancelOnError: false,
+        )
         .asFuture();
   }
 

@@ -5,6 +5,8 @@
 package gomobile
 
 import (
+	"io"
+
 	"github.com/empirefox/flutter_dial_go/go/example/internal/gomobile"
 	"github.com/empirefox/flutter_dial_go/go/forgo"
 )
@@ -35,13 +37,16 @@ func NewFromGo() FromGo {
 type fromGo struct {
 	init    *forgo.ConcurrentRunner
 	destroy *forgo.ConcurrentRunner
+
+	s1 io.Closer
+	s2 io.Closer
 }
 
 func (m *fromGo) DoInitOnce() ConcurrentRunner {
 	m.init.Once(func() error {
 		// TODO init code here
-		gomobile.StartServer1()
-		gomobile.StartServer2()
+		m.s1 = gomobile.StartServer1()
+		m.s2 = gomobile.StartServer2()
 		return nil
 	})
 	return m.init
@@ -50,7 +55,11 @@ func (m *fromGo) DoInitOnce() ConcurrentRunner {
 func (m *fromGo) DoDestroyOnce() ConcurrentRunner {
 	m.destroy.Once(func() error {
 		// TODO clean code here
-		return nil
+		err := m.s1.Close()
+		if e := m.s2.Close(); e != nil {
+			err = e
+		}
+		return err
 	})
 	return m.destroy
 }

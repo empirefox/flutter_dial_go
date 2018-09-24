@@ -77,7 +77,7 @@ Future initGo() async {
 Then dial:
 
 ```dart
-    // http request
+    // raw http request
     // golang: forgo.Listen(9998)
     Conn c = await Conn.dial(9998);
     print('GET /\n');
@@ -85,22 +85,44 @@ Then dial:
         .fold(BytesBuilder(), (BytesBuilder a, List<int> b) => a..add(b))
         .then((a) => setState(() {
               _result = 'GET / HTTP/1.0\n\n' + utf8.decode(a.takeBytes());
-            }));
-    c.done.then((_) {
-      c.close();
-    });
+            }))
+        .catchError((e) => setState(() {
+              _result = 'Caught http error: $e';
+            }))
+        .then((_) => c.close());
     c.add(utf8.encode('GET / HTTP/1.0\r\n\r\n'));
 ```
 
 Or http2:
 
 ```dart
-    // golang: forgo.Listen(9999)
-    _conn = await Conn.dial(9999);
-    _conn.done.then((_) {
-      _conn.close();
-    });
-    _transport = ClientTransportConnection.viaStreams(_conn.receiveStream, _conn);
+    // golang: forgo.Listen(9997)
+    Conn c = await Conn.dial(9997);
+    var transport = ClientTransportConnection.viaStreams(c.receiveStream, c);
+```
+
+Or grpc:
+
+```dart
+  Future<Http2Streams> _connect(String host, int port) async {
+    // ignore: close_sinks
+    final conn = await Conn.dial(port);
+    return Http2Streams(conn.receiveStream, conn, conn.done);
+  }
+
+    var channel = ClientChannel(
+      'go',
+      port: 9999,
+      options: ChannelOptions(
+        credentials: ChannelCredentials.insecure(),
+        http2: Http2Options(connect: connect),
+      ),
+    );
+    var stub = GreeterClient(_channel);
+
+    ...
+
+    channel.terminate();
 ```
 
 [Flutter Example](example/lib/main.dart).
