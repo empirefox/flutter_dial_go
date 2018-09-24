@@ -91,7 +91,7 @@ class Conn implements StreamSink<List<int>> {
 
   StreamController<List<int>> _localStream;
   final String _streamName;
-  final StreamController _sinkDone = StreamController.broadcast();
+  final Completer _sinkDone = Completer();
   bool _sinkClosed = false;
 
   static Future<Conn> dial(int port) async {
@@ -165,12 +165,11 @@ class Conn implements StreamSink<List<int>> {
     BinaryMessages.setMessageHandler(_streamName, null);
     await _controller.invokeMethod('close', id);
 
-    _sinkDone.stream.drain();
-    return await _sinkDone.close();
+    _sinkDone.complete();
   }
 
   @override
-  Future get done => _sinkDone.done;
+  Future get done => _sinkDone.future;
 }
 
 class AndroidNotificationChannel {
