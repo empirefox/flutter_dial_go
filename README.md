@@ -104,10 +104,10 @@ Or http2:
 Or grpc:
 
 ```dart
-  Future<Http2Streams> _connect(String host, int port) async {
+  Future<Http2Streams> _connect(String host, int port, ChannelCredentials credentials) async {
     // ignore: close_sinks
     final conn = await Conn.dial(port);
-    return Http2Streams(conn.receiveStream, conn, conn.done);
+    return Http2Streams(conn.receiveStream, conn);
   }
 
     var channel = ClientChannel(
@@ -115,7 +115,7 @@ Or grpc:
       port: 9999,
       options: ChannelOptions(
         credentials: ChannelCredentials.insecure(),
-        http2: Http2Options(connect: connect),
+        connect: _connect,
       ),
     );
     var stub = GreeterClient(_channel);
@@ -125,7 +125,7 @@ Or grpc:
     channel.terminate();
 ```
 
-[Flutter Example](example/lib/main.dart).
+[Flutter Example](example/lib/src/app.dart).
 
 ## Flutter
 
