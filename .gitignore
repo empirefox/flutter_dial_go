@@ -7,4 +7,10 @@ pubspec.lock
 
 build/
 
+.idea/codeStyles/Project.xml
+.idea/libraries/Dart_SDK.xml
+.idea/libraries/Flutter_Plugins.xml
+.idea/libraries/Flutter_for_Android.xml
+.idea/gradle.xml
+.idea/misc.xml
 .idea/workspace.xml
