@@ -181,6 +181,7 @@ class AndroidNotificationChannel {
   static const int IMPORTANCE_HIGH = 0x00000004;
 }
 
+// github.com/empirefox/flutter_dial_go/go/formobile/formobile.go
 enum _GoConnErr {
   ErrNone,
   EOF,

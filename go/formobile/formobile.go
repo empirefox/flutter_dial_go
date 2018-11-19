@@ -86,4 +86,3 @@ func (d *dialer) Dial(port int32, channelId int64, timeoutnano int64) (Conn, err
 var defaultDialer Dialer = new(dialer)
 
 func GetDialer() Dialer { return defaultDialer }
-

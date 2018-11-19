@@ -59,10 +59,11 @@ class _MyAppState extends State<MyApp> {
     super.dispose();
   }
 
-  Future<Http2Streams> _connect(String host, int port) async {
+  Future<Http2Streams> _connect(
+      String host, int port, ChannelCredentials credentials) async {
     // ignore: close_sinks
     final conn = await Conn.dial(port);
-    return Http2Streams(conn.receiveStream, conn, conn.done);
+    return Http2Streams(conn.receiveStream, conn);
   }
 
   Future initGrpc() async {
@@ -99,7 +100,7 @@ class _MyAppState extends State<MyApp> {
       port: grpcPort,
       options: ChannelOptions(
         credentials: ChannelCredentials.insecure(),
-        http2: Http2Options(connect: _connect),
+        connect: _connect,
       ),
     );
     _stub = GreeterClient(_channel);
