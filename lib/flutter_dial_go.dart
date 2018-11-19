@@ -20,6 +20,7 @@ class Conn implements StreamSink<List<int>> {
             var err = _GoConnErr.values[args[1] as int];
             var stream = _localStreams[id];
             if (stream != null) {
+              _localStreams.remove(id);
               switch (err) {
                 case _GoConnErr.ErrClosedPipe:
                   stream.addError('Go Closed Pipe');
