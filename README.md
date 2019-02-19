@@ -1,4 +1,18 @@
-# flutter_dial_go
+[# flutter_dial_go
+
+A new flutter plugin project.
+
+## Getting Started
+
+This project is a starting point for a Flutter
+[plug-in package](https://flutter.io/developing-packages/),
+a specialized package that includes platform-specific implementation code for
+Android and/or iOS.
+
+For help getting started with Flutter, view our 
+[online documentation](https://flutter.io/docs), which offers tutorials, 
+samples, guidance on mobile development, and a full API reference.
+](# flutter_dial_go
 
 A flutter plugin for connecting to golang embeded servers via platform channel.
 
@@ -8,18 +22,18 @@ A flutter plugin for connecting to golang embeded servers via platform channel.
 
 ```bash
 go get -u github.com/empirefox/flutter_dial_go
-cd $GOPATH/github.com/empirefox/flutter_dial_go/go
+cd GOPATH/github.com/empirefox/flutter_dial_go/go
 make android
 ```
 
 ### Install for flutter project
 
-Add to `pubsepc.yml`, replace `$GOPATH` with real path.
+Add to `pubsepc.yml`, replace `GOPATH` with real path.
 
 ```yaml
 dependencies:
   flutter_dial_go:
-    path: $GOPATH/github.com/empirefox/flutter_dial_go
+    path: GOPATH/github.com/empirefox/flutter_dial_go
 ```
 
 ### Develop golang side
@@ -38,8 +52,8 @@ import "github.com/empirefox/flutter_dial_go/go/forgo"
 - Implement `gomobile` package exactly like: [Go Example](go/example/gomobile/mobile.go).
 - Copy [Makefile](go/Makefile) to flutter project, then replace the `example` path.
 - Build with the new `Makefile`.
-- For Android Studio: import `go.aar` and add `api project(':go')` to `$PROJECT_DIR$/android/app/build.gradle`.
-- For Xcode: add `${PODS_ROOT}/../Frameworks` to all Framework search paths.
+- For Android Studio: import `go.aar` and add `api project(':go')` to `PROJECT_DIR$/android/app/build.gradle`.
+- For Xcode: add `PODS_ROOT/../Frameworks` to all Framework search paths.
 
 ### Develop flutter side
 
@@ -87,7 +101,7 @@ Then dial:
               _result = 'GET / HTTP/1.0\n\n' + utf8.decode(a.takeBytes());
             }))
         .catchError((e) => setState(() {
-              _result = 'Caught http error: $e';
+              _result = 'Caught http error: e';
             }))
         .then((_) => c.close());
     c.add(utf8.encode('GET / HTTP/1.0\r\n\r\n'));
@@ -133,3 +147,4 @@ For help getting started with Flutter, view our online
 [documentation](https://flutter.io/).
 
 For help on editing plugin code, view the [documentation](https://flutter.io/developing-packages/#edit-plugin-package).
+)

@@ -1,4 +1,4 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="io.github.empirefox.flutterdialgo">
+  package="io.github.empirefox.flutter_dial_go">
     <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>

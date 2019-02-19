@@ -1,4 +1,4 @@
-package io.github.empirefox.flutterdialgo;
+package io.github.empirefox.flutter_dial_go;
 
 import android.app.Activity;
 import android.app.NotificationChannel;

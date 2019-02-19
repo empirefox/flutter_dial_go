@@ -5,7 +5,8 @@
 // A "gomobile" package is expected, and all public apis must be exactly the
 // same with `go/example/gomobile/mobile.go`.
 //
-// Created by: `flutter create --template=plugin -i swift --org io.github.empirefox flutter_dial_go`
+// Created by: 
+//  `flutter create --template=plugin -i swift --org io.github.empirefox --description "A flutter plugin for connecting to golang embeded servers via platform channel." flutter_dial_go`
 package flutter_dial_go
 
 import (

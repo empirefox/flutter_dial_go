@@ -14,10 +14,10 @@ ios:
 		github.com/empirefox/flutter_dial_go/go/formobile
 
 protoc:
-	cd example
+	cd example && \
 	protoc -I ./protos --go_out=plugins=grpc:./protos ./protos/helloworld.proto
+	cd example && \
 	protoc --dart_out=grpc:../../example/lib/src/generated -Iprotos protos/helloworld.proto
-	cd ..
 
 clean:
 	rm ../example/android/go/*.aar

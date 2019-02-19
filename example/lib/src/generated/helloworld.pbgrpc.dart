@@ -4,35 +4,35 @@
 ///
 // ignore_for_file: non_constant_identifier_names,library_prefixes,unused_import
 
-import 'dart:async';
+import 'dart:async' as $async;
 
-import 'package:grpc/grpc.dart';
-
+import 'package:grpc/grpc.dart' as $grpc;
 import 'helloworld.pb.dart';
 export 'helloworld.pb.dart';
 
-class GreeterClient extends Client {
-  static final _$sayHello = new ClientMethod<HelloRequest, HelloReply>(
+class GreeterClient extends $grpc.Client {
+  static final _$sayHello = new $grpc.ClientMethod<HelloRequest, HelloReply>(
       '/helloworld.Greeter/SayHello',
       (HelloRequest value) => value.writeToBuffer(),
       (List<int> value) => new HelloReply.fromBuffer(value));
 
-  GreeterClient(ClientChannel channel, {CallOptions options})
+  GreeterClient($grpc.ClientChannel channel, {$grpc.CallOptions options})
       : super(channel, options: options);
 
-  ResponseFuture<HelloReply> sayHello(HelloRequest request,
-      {CallOptions options}) {
-    final call = $createCall(_$sayHello, new Stream.fromIterable([request]),
+  $grpc.ResponseFuture<HelloReply> sayHello(HelloRequest request,
+      {$grpc.CallOptions options}) {
+    final call = $createCall(
+        _$sayHello, new $async.Stream.fromIterable([request]),
         options: options);
-    return new ResponseFuture(call);
+    return new $grpc.ResponseFuture(call);
   }
 }
 
-abstract class GreeterServiceBase extends Service {
+abstract class GreeterServiceBase extends $grpc.Service {
   String get $name => 'helloworld.Greeter';
 
   GreeterServiceBase() {
-    $addMethod(new ServiceMethod<HelloRequest, HelloReply>(
+    $addMethod(new $grpc.ServiceMethod<HelloRequest, HelloReply>(
         'SayHello',
         sayHello_Pre,
         false,
@@ -41,9 +41,11 @@ abstract class GreeterServiceBase extends Service {
         (HelloReply value) => value.writeToBuffer()));
   }
 
-  Future<HelloReply> sayHello_Pre(ServiceCall call, Future request) async {
+  $async.Future<HelloReply> sayHello_Pre(
+      $grpc.ServiceCall call, $async.Future request) async {
     return sayHello(call, await request);
   }
 
-  Future<HelloReply> sayHello(ServiceCall call, HelloRequest request);
+  $async.Future<HelloReply> sayHello(
+      $grpc.ServiceCall call, HelloRequest request);
 }

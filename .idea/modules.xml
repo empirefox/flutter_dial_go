@@ -3,7 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/flutter_dial_go.iml" filepath="$PROJECT_DIR$/flutter_dial_go.iml" />
-      <module fileurl="file://$PROJECT_DIR$/flutter_dial_go_android.iml" filepath="$PROJECT_DIR$/flutter_dial_go_android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/flutter_dial_go_android.iml" filepath="$PROJECT_DIR$/android/flutter_dial_go_android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/example/android/flutter_dial_go_example_android.iml" filepath="$PROJECT_DIR$/example/android/flutter_dial_go_example_android.iml" />
     </modules>
   </component>
 </project>

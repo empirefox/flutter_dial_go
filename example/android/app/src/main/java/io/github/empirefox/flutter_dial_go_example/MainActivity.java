@@ -1,4 +1,4 @@
-package io.github.empirefox.flutterdialgoexample;
+package io.github.empirefox.flutter_dial_go_example;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;
