@@ -10,8 +10,10 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.Looper;
-import androidx.core.app.NotificationCompat;
 import android.util.Log;
+
+import androidx.core.app.NotificationCompat;
+
 
 public class DialService extends Service {
   private static final String TAG = "DialService#";
@@ -22,7 +24,7 @@ public class DialService extends Service {
   private Dialer dialer = null;
   private final IBinder binder = new DialerBinder();
 
-  public static final Intent createIntent(Context context, SimpleForegroundNotification sfn) {
+  public static Intent createIntent(Context context, SimpleForegroundNotification sfn) {
     Intent intent = new Intent(context, DialService.class);
     if (sfn != null) {
       intent.setAction(ACTION_START).putExtra(INTENT_EXTRA_KEY_SFN, sfn);
@@ -32,7 +34,7 @@ public class DialService extends Service {
     return intent;
   }
 
-  public static final Dialer getDialer(IBinder binder) {
+  public static Dialer getDialer(IBinder binder) {
     return ((DialerBinder) binder).getDialer();
   }
 
