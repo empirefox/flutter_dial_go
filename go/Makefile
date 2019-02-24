@@ -1,28 +1,38 @@
 #VERSION := $(shell git describe --tags)
-# This is just used in all, so as to have something in the arch and OS
 
-android:
-	gomobile bind -target android -o ../example/android/go/go.aar \
-		github.com/empirefox/flutter_dial_go/go/example/gomobile \
-		github.com/empirefox/flutter_dial_go/go/formobile
-	cp ../example/android/go/go.aar ../android/libs/
-	cp ../example/android/go/go-sources.jar ../android/libs/
+makefile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
+makefile_dir := $(shell dirname ${makefile_path})
+app_path := $(abspath $(makefile_dir)/../example)
+gomobile_pkg := github.com/empirefox/flutter_dial_go/go/example/gomobile
 
-ios:
-	gomobile bind -target ios -o ../example/ios/Frameworks/Gomobile.framework \
-		github.com/empirefox/flutter_dial_go/go/example/gomobile \
-		github.com/empirefox/flutter_dial_go/go/formobile
+echo:
+	@APP_PATH=${app_path} \
+		GOMOBILE_PKG=${gomobile_pkg} \
+		make -f ${makefile_dir}/example/Makefile echo
+
+bind-android:
+	@APP_PATH=${app_path} \
+		GOMOBILE_PKG=${gomobile_pkg} \
+		make -f ${makefile_dir}/example/Makefile bind-android
+
+	cd ${makefile_dir}/../example/android/go && \
+		jar xf go.aar classes.jar && \
+		mv classes.jar go.jar && \
+		cp go.jar ${makefile_dir}/../android/libs/ && \
+		cp go-sources.jar ${makefile_dir}/../android/libs/
+
+bind-ios:
+	@APP_PATH=${app_path} \
+		GOMOBILE_PKG=${gomobile_pkg} \
+		make -f ${makefile_dir}/example/Makefile bind-ios
 
 protoc:
-	cd example && \
-	protoc -I ./protos --go_out=plugins=grpc:./protos ./protos/helloworld.proto
-	cd example && \
-	protoc --dart_out=grpc:../../example/lib/src/generated -Iprotos protos/helloworld.proto
+	@APP_PATH=${app_path} \
+		GOMOBILE_PKG=${gomobile_pkg} \
+		make -f ${makefile_dir}/example/Makefile protoc
 
 clean:
-	rm ../example/android/go/*.aar
-	rm ../example/android/go/*.jar
-	rm ../android/libs/*.aar
-	rm ../android/libs/*.jar
-	rm -rf ../example/ios/Frameworks/Gomobile.framework
-
+	@APP_PATH=${app_path} \
+		make -f ${makefile_dir}/example/Makefile clean
+	rm -f ${makefile_dir}/../android/libs/*.aar
+	rm -f ${makefile_dir}/../android/libs/*.jar

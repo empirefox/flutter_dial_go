@@ -1,22 +1,17 @@
-[# flutter_dial_go
-
-A new flutter plugin project.
-
-## Getting Started
-
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.io/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
-
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.io/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
-](# flutter_dial_go
+# flutter_dial_go
 
 A flutter plugin for connecting to golang embeded servers via platform channel.
 
 ## Getting Started
+
+### Example
+
+```bash
+make -f ./go/Makefile protoc
+make -f ./go/Makefile bind-android
+make -f ./go/Makefile bind-ios
+flutter run
+```
 
 ### Install for golang
 
@@ -50,7 +45,7 @@ import "github.com/empirefox/flutter_dial_go/go/forgo"
 ```
 
 - Implement `gomobile` package exactly like: [Go Example](go/example/gomobile/mobile.go).
-- Copy [Makefile](go/Makefile) to flutter project, then replace the `example` path.
+- Copy [Makefile](go/example/Makefile) to flutter project, then replace the `GOMOBILE_PKG`, `APP_PATH` and `protoc:`.
 - Build with the new `Makefile`.
 - For Android Studio: import `go.aar` and add `api project(':go')` to `PROJECT_DIR$/android/app/build.gradle`.
 - For Xcode: add `PODS_ROOT/../Frameworks` to all Framework search paths.
@@ -140,11 +135,3 @@ Or grpc:
 ```
 
 [Flutter Example](example/lib/src/app.dart).
-
-## Flutter
-
-For help getting started with Flutter, view our online
-[documentation](https://flutter.io/).
-
-For help on editing plugin code, view the [documentation](https://flutter.io/developing-packages/#edit-plugin-package).
-)
